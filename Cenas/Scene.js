@@ -1,6 +1,7 @@
 function Scene(params){
     var exemplo={
-        NPCs: [],       mainSprite:[], 
+        NPCs: [],       NPCs2: [],
+        mainSprite:[], 
         tiros:[],       estrelas:[], 
         w:1200,         h:600,
         vida:100,       ctx:null,
@@ -95,21 +96,19 @@ Scene.prototype.desenhar= function(){
 Scene.prototype.passo =function(dt, tempo){
     tempo=tempo/100;
     console.log(tempo);
-
     this.limpar();
     this.comportamento();
     this.mover(dt);
     this.desenhar();
-    
-    if(tempo>3){
+
+    if(tempo>4){
         this.moveNPCs();
         this.desenharNPCs();
-        }
-    barra_HP(this.vida);    
-
-    if(this.vida<=0){
-        return false;
     }
+    barra_HP(this.vida); 
+    if(this.vida<=0)    
+        return false;
+
     return true;
 }
 Scene.prototype.limpar= function(){
@@ -132,7 +131,6 @@ Scene.prototype.desenharNPCs=function(){
         }
     }
 }
-
 Scene.prototype.moveNPCs=function(){
     //Move NPCs e colisão com a borda
     for(var i=0; i<this.NPCs.length; i++){
@@ -146,7 +144,10 @@ Scene.prototype.moveNPCs=function(){
 }
 
 
+
+
 //Outras funções =======================================================
+
 function barra_HP(vida){
     if(vida<=0)     vida=0; //Caso passe de 0, não ira para negativos
 
