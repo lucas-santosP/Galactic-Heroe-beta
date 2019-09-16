@@ -1,0 +1,32 @@
+@keyframes fade{
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+div{
+    align-content: center;
+    text-align: center;
+    
+    align-content: center;
+    text-align: center;
+    animation-name: fade;
+    animation-duration: 2s;
+}
+body{
+    color:white;
+    background-image:url(https://i.imgur.com/I1zT9jy.jpg);
+    background-repeat:initial;
+    background-size: 1650px;
+}
+
+@keyframes fade{
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
