@@ -30,12 +30,55 @@
         var vida=100;
         var numeroDeEstrelas=100;
         var numeroDeNPCs=100;
-
         var teclas={cima:0,  baixo: 0,  direita:0,  esquerda: 0,  espaco: 0, control: 0};
-        var cena1=new Scene({ctx: ctx, w:canvas.width, h: canvas.height});
+        var alive;
+        var tempo;
+        var pontos;
+        var cena1;
+        var pc;
+    //MAIN
+        requestAnimationFrame(passo);
+        atualiza();
+        function passo(t){
+            if(alive){
+                pontos++;
+                tempo++;
+                dt=(t-anterior)/1000;
+                alive = cena1.passo(dt,tempo);
+                anterior=t;
+                requestAnimationFrame(passo);
+            }
+            else{
+                f_morreu();
+                requestAnimationFrame(passo);
+            }
+        }
+
+    function f_morreu(){
+        this.ctx.fillStyle="black";
+        this.ctx.globalAlpha=0.9;
+        this.ctx.fillRect(0, 0, canvas.width,canvas.height);
+        this.ctx.fillStyle="darkred";
+        this.ctx.font="100px bold monospaced";
+        this.ctx.fillText("VOCÊ MORREU",canvas.width/2-360,canvas.height/2+20);   
+        this.ctx.font="38px bold monospaced";
+        this.ctx.fillText("PONTOS:"+pontos, (canvas.width/2-360)+200,(canvas.height/2+20)+80);
+        this.ctx.globalAlpha=1.0;
+        document.body.addEventListener(click, function(e){
+                console.log("Apertou");
+                
+        });
+
+       }
+
+    function atualiza(){
+        alive=true;
+        tempo=0;
+        pontos=0;
+        cena1=new Scene({ctx: ctx, w:canvas.width, h: canvas.height});
     //Geração dos personagens
         //Sprite Principal
-        var pc = new Sprite({comportamento: porTeclas(teclas)});
+        pc = new Sprite({comportamento: porTeclas(teclas)});
         cena1.adicionarMainSprite(pc);
         //NPCs
         for(var i=0; i < numeroDeNPCs; i++){
@@ -43,44 +86,19 @@
                 x:Math.random()*canvas.width, 
                 y:Math.random()*canvas.height,
                 vy:Math.random()*250+Math.random()*-250,
-                })
-            );
+                }) );
         }
         //Estrelas
         for(var i=0; i < numeroDeNPCs; i++){
             cena1.adicionarEstrelas(new estrelas({
                 x:Math.random()*canvas.width, 
                 y:Math.random()*canvas.height
-                })
-            );
+                }) );
         }
+    }
 
-    //MAIN
-        //cena1.desenhar(); //não entendi
-        requestAnimationFrame(passo);
-        var alive=true;
-        var tempo=0;
-        function passo(t){
-            if(alive){
-                tempo++;
-                dt=(t-anterior)/1000;
-                alive = cena1.passo(dt,tempo);
-                anterior=t;
-                requestAnimationFrame(passo);
-            }
-            else
-                f_morreu();
-        }
 
-        function f_morreu(){
-            this.ctx.fillStyle="black";
-            this.ctx.globalAlpha=0.9;
-            this.ctx.fillRect(0, 0, canvas.width,canvas.height);
-            this.ctx.fillStyle="darkred";
-            this.ctx.font="100px bold monospaced";
-            this.ctx.fillText("VOCÊ MORREU",canvas.width/2-360,canvas.height/2+20);   
-            this.ctx.globalAlpha=1.0;
-        }
+
 
     //CONTROLES:
         function porTeclas(teclas){

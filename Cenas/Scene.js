@@ -95,7 +95,6 @@ Scene.prototype.desenhar= function(){
 //PASSO ================================================================
 Scene.prototype.passo =function(dt, tempo){
     tempo=tempo/100;
-    console.log(tempo);
     this.limpar();
     this.comportamento();
     this.mover(dt);
@@ -126,7 +125,7 @@ Scene.prototype.desenharNPCs=function(){
             this.NPCs[i].y= Math.random()*this.h;
 
             this.mainSprite[0].imune=2;//cooldown do imune
-            this.vida-=10;
+            this.vida-=50;
             barra_HP(this.vida);       //atualiza a barra de vida ao receber dano    
         }
     }
