@@ -5,6 +5,7 @@ function Scene(params){
         tiros:[],       estrelas:[], 
         w:1200,         h:600,
         vida:100,       ctx:null,
+        pt:0,
     }
     Object.assign(this, exemplo, params);
 }
@@ -81,10 +82,12 @@ Scene.prototype.desenhar= function(){
                 console.log(this.tiros.length);
                 //Move o tiro para cima, saindo da tela. 
                 //E lá quando ele chegar no fim da largura será removido pela outra função de colisão com borda
-                this.tiros[i].y=this.h; 
+                this.tiros[i].y=-this.h; 
                 ////Joga o NPC pra longe ao colidir com tiro
                 this.NPCs[j].x= Math.random()*this.w;
                 this.NPCs[j].y= Math.random()*this.h;
+                //AUMENTA PONTO
+                this.pt++;
             }
         }
     }
@@ -93,7 +96,7 @@ Scene.prototype.desenhar= function(){
 }
 
 //PASSO ================================================================
-Scene.prototype.passo =function(dt, tempo){
+Scene.prototype.passo =function(dt, tempo, pontos){
     tempo=tempo/100;
     this.limpar();
     this.comportamento();
@@ -104,7 +107,7 @@ Scene.prototype.passo =function(dt, tempo){
         this.moveNPCs();
         this.desenharNPCs();
     }
-    barra_HP(this.vida); 
+    barra_HP(this.vida, pontos); 
     if(this.vida<=0)    
         return false;
 
@@ -125,7 +128,7 @@ Scene.prototype.desenharNPCs=function(){
             this.NPCs[i].y= Math.random()*this.h;
 
             this.mainSprite[0].imune=2;//cooldown do imune
-            this.vida-=50;
+            this.vida-=25;
             barra_HP(this.vida);       //atualiza a barra de vida ao receber dano    
         }
     }
@@ -143,11 +146,13 @@ Scene.prototype.moveNPCs=function(){
 }
 
 
-
+Scene.prototype.pts=function(){
+    return this.pt;
+}
 
 //Outras funções =======================================================
 
-function barra_HP(vida){
+function barra_HP(vida, pontos){
     if(vida<=0)     vida=0; //Caso passe de 0, não ira para negativos
 
     if(vida<=30)    this.ctx.fillStyle="red";
@@ -163,4 +168,8 @@ function barra_HP(vida){
     this.ctx.fillStyle="white";
     this.ctx.font="20px bold monospaced";
     this.ctx.fillText("HP :   "+vida+"%",5,20);
+
+    //DESENHA PONTOS
+    this.ctx.font="14px bold monospaced";
+    this.ctx.fillText("PONTOS:"+pontos, 1100, 20);
 }

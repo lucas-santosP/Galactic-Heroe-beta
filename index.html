@@ -9,6 +9,7 @@
     <script src="Personagens/Sprite.js"></script>
     <script src="Personagens/tiro.js"></script>
     <script src="Personagens/inimigo1.js"></script>
+    <script src="AssetsManager.js"></script>
     <link rel="stylesheet" href="estilos.css"/>
 </head>
 <body>
@@ -21,31 +22,33 @@
     //Difinições do canvas
         var canvas = document.querySelector("canvas");
         var ctx = canvas.getContext("2d");
-        var canvasLargura=1200,     canvasAltura=500;
+        var canvasLargura=1200,     canvasAltura=600;
         canvas.width=canvasLargura; canvas.height=canvasAltura;
         canvas.style.border="10px solid darkred";
     //Variaveis
-        var anterior=0;
-        var dt=0;
-        var vida=100;
-        var numeroDeEstrelas=100;
-        var numeroDeNPCs=100;
-        var teclas={cima:0,  baixo: 0,  direita:0,  esquerda: 0,  espaco: 0, control: 0};
-        var alive;
-        var tempo;
-        var pontos;
-        var cena1;
+        var anterior=0;         var dt=0;
+        var vida=100;           var numeroDeEstrelas=100;
+        var numeroDeNPCs=100;   var teclas={cima:0,  baixo: 0,  direita:0,  esquerda: 0,  espaco: 0, control: 0};
+        var alive;              var tempo;
+        var pontos;             var cena1;
         var pc;
+        //IMAGEM
+        var assetsMng= new AssetsManager();
+        assetsMng.loadImage("player", 'assets/fighterspr1.png');    //main sprite
+        assetsMng.loadImage("tiro", 'assets/img-tiro.png')          //tiro
+        
     //MAIN
         requestAnimationFrame(passo);
         atualiza();
+        //PASSO
         function passo(t){
             if(alive){
-                pontos++;
                 tempo++;
                 dt=(t-anterior)/1000;
-                alive = cena1.passo(dt,tempo);
+                alive = cena1.passo(dt,tempo, pontos);
+                pontos=cena1.pts();
                 anterior=t;
+                //ctx.drawImage(assetsMng.img("player"), cena1.mainSprite[0].x-6, cena1.mainSprite[0].y, 80, 40);
                 requestAnimationFrame(passo);
             }
             else{
@@ -53,53 +56,44 @@
                 requestAnimationFrame(passo);
             }
         }
-
+    //ATUALIZA ESTADO DO JOGO
+        function atualiza(){
+            alive=true;
+            tempo=0;
+            pontos=0;
+            cena1=new Scene({ctx: ctx, w:canvas.width, h: canvas.height, assets: assetsMng});
+        //Geração dos personagens
+            //Sprite Principal
+            pc = new Sprite({comportamento: porTeclas(teclas)});
+            cena1.adicionarMainSprite(pc);
+            //NPCs
+            for(var i=0; i < numeroDeNPCs; i++){
+                cena1.adicionarNPCs(new inimigo1({
+                    x:Math.random()*canvas.width, 
+                    y:Math.random()*canvas.height,
+                    vy:Math.random()*250+Math.random()*-250,
+                    }) );
+            }
+            //Estrelas
+            for(var i=0; i < numeroDeNPCs; i++){
+                cena1.adicionarEstrelas(new estrelas({
+                    x:Math.random()*canvas.width, 
+                    y:Math.random()*canvas.height
+                    }) );
+            }
+        }
+    //SE MORREU
     function f_morreu(){
-        this.ctx.fillStyle="black";
-        this.ctx.globalAlpha=0.9;
-        this.ctx.fillRect(0, 0, canvas.width,canvas.height);
-        this.ctx.fillStyle="darkred";
-        this.ctx.font="100px bold monospaced";
-        this.ctx.fillText("VOCÊ MORREU",canvas.width/2-360,canvas.height/2+20);   
-        this.ctx.font="38px bold monospaced";
-        this.ctx.fillText("PONTOS:"+pontos, (canvas.width/2-360)+200,(canvas.height/2+20)+80);
-        this.ctx.globalAlpha=1.0;
-        document.body.addEventListener(click, function(e){
-                console.log("Apertou");
-                
-        });
-
-       }
-
-    function atualiza(){
-        alive=true;
-        tempo=0;
-        pontos=0;
-        cena1=new Scene({ctx: ctx, w:canvas.width, h: canvas.height});
-    //Geração dos personagens
-        //Sprite Principal
-        pc = new Sprite({comportamento: porTeclas(teclas)});
-        cena1.adicionarMainSprite(pc);
-        //NPCs
-        for(var i=0; i < numeroDeNPCs; i++){
-            cena1.adicionarNPCs(new inimigo1({
-                x:Math.random()*canvas.width, 
-                y:Math.random()*canvas.height,
-                vy:Math.random()*250+Math.random()*-250,
-                }) );
-        }
-        //Estrelas
-        for(var i=0; i < numeroDeNPCs; i++){
-            cena1.adicionarEstrelas(new estrelas({
-                x:Math.random()*canvas.width, 
-                y:Math.random()*canvas.height
-                }) );
-        }
-    }
-
-
-
-
+                this.ctx.fillStyle="black";
+                this.ctx.globalAlpha=0.9;
+                this.ctx.fillRect(0, 0, canvas.width,canvas.height);
+                this.ctx.fillStyle="darkred";
+                this.ctx.font="100px bold monospaced";
+                this.ctx.fillText("VOCÊ MORREU",canvas.width/2-360,canvas.height/2+20);   
+                this.ctx.font="38px bold monospaced";
+                this.ctx.fillText("PONTOS:"+pontos, (canvas.width/2-360)+200,(canvas.height/2+20)+80);
+                this.ctx.globalAlpha=1.0;
+            }
     //CONTROLES:
         function porTeclas(teclas){
             return function(){

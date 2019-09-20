@@ -1,7 +1,7 @@
 function Sprite(params={}){
     var exemplo={
         x:250,           y:300,
-        w:35,           h:25,   
+        w:70,           h:40,   
         vx:0,           vy:0,
         vm:0,           imune: 0,
         color: "grey",  
@@ -19,31 +19,18 @@ Sprite.prototype.desenhar = function(ctx)
     ctx.save();
     //ctx.strokeRect(this.x, this.y, this.w, this.h);
     ctx.fillStyle = 'rgba(190, 190, 190, 0.841)';
-    ctx.strokeStyle= "black";
-    ctx.lineWidth=1;
+    ctx.strokeStyle= "red";
+    ctx.lineWidth=2;
+    //ctx.strokeRect(this.x, this.y, this.w, this.h);
 
+    
     if(this.imune > 0){
         ctx.globalAlpha = 0.5*Math.cos(60*this.imune);
     }
-    ctx.beginPath();
-
-    if(this.dash > 0){
-        var auxW=this.w-(this.w/3);
-        var auxY=this.h-(this.h/3);
-        //ctx.fillRect(this.x, this.y, this.w, this.h)
-        ctx.moveTo(this.x, this.y + (this.h/3) );
-        ctx.lineTo(this.x + auxW, this.y + this.h/2 +(this.h/3));
-        ctx.lineTo(this.x, this.y+ auxY +((this.h/3)));
-    }
-    else{
-        //ctx.strokeRect(this.x, this.y, this.w, this.h);
-        //ctx.fillRect(this.x, this.y, this.w, this.h);
-        ctx.moveTo(this.x, this.y);
-        ctx.lineTo(this.x+this.w, this.y+this.h/2);
-        ctx.lineTo(this.x, this.y+this.h);
-    }
-    ctx.closePath();
-    ctx.fill();
+    if(this.dash > 0){    }
+    ctx.drawImage(this.scene.assets.img("player"), this.x, this.y, this.w, this.h);
+    
+    //ctx.fillRect(this.x, this.y, this.w, this.h)
     ctx.restore();
     ctx.globalAlpha = 1.0;
 }

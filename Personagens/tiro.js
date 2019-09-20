@@ -1,7 +1,7 @@
 function tiro(exemplo = {}){
     var{
         x=0,       y=0,
-        w=8,       h=8,
+        w=25,       h=15,
         vx=400,       vy=0,
         color="gold",
     } = exemplo;
@@ -14,8 +14,10 @@ tiro.prototype = new tiro({});
 tiro.constructor = tiro;
 
 tiro.prototype.desenhar = function(ctx){ 
-    ctx.fillStyle = this.color;
-    ctx.fillRect(this.x, this.y, this.w, this.h);
+    //ctx.fillStyle = this.color;
+    //ctx.fillRect(this.x, this.y, this.w, this.h);
+
+    ctx.drawImage(this.scene.assets.img("tiro"), this.x, this.y-5, this.w, this.h); 
 }
 
 tiro.prototype.mover = function(dt){
