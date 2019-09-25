@@ -34,11 +34,12 @@ Scene.prototype.mover= function(dt){
     this.mainSprite[0].mover(dt);
     //Move estrelas e colisão com a borda
     for(var i=0; i<this.estrelas.length; i++){
-        this.estrelas[i].mover(dt);
-        if(this.estrelas[i].colisaoBorda(this.w)){
-            this.estrelas[i].x= Math.random()+this.w;
-            this.estrelas[i].y= Math.random()*this.h; 
-        }
+        this.estrelas[i].mover(dt, this.mainSprite[0]);
+        
+        this.estrelas[i].colisaoBorda(this.w)
+        //if(this.estrelas[i].colisaoBorda(this.w)){  
+            //this.estrelas[i].x= this.w;
+            //this.estrelas[i].y= Math.random()*this.h; }
     }
     //Move tiros e remove ao sair da tela
     for(var i=0; i<this.tiros.length; i++){
@@ -71,7 +72,7 @@ Scene.prototype.desenhar= function(){
 
     //Desenha estrelas
     for(var i=0; i<this.estrelas.length; i++){
-        this.estrelas[i].desenhar(this.ctx); 
+        this.estrelas[i].desenhar(this.ctx, this.w); 
     }
     //Desenha tiros
     for(var i=0; i<this.tiros.length; i++){
@@ -79,7 +80,6 @@ Scene.prototype.desenhar= function(){
         //Percorre todos NPCs, vendo se algum colidiu com o tiro
         for(var j=0; j<this.NPCs.length; j++){
             if(this.tiros[i].colidiuComNPC(this.NPCs[j], this.w)){
-                console.log(this.tiros.length);
                 //Move o tiro para cima, saindo da tela. 
                 //E lá quando ele chegar no fim da largura será removido pela outra função de colisão com borda
                 this.tiros[i].y=-this.h; 
@@ -95,28 +95,7 @@ Scene.prototype.desenhar= function(){
     this.mainSprite[0].desenhar(this.ctx);
 }
 
-//PASSO ================================================================
-Scene.prototype.passo =function(dt, tempo, pontos){
-    tempo=tempo/100;
-    this.limpar();
-    this.comportamento();
-    this.mover(dt);
-    this.desenhar();
-
-    if(tempo>4){
-        this.moveNPCs();
-        this.desenharNPCs();
-    }
-    barra_HP(this.vida, pontos); 
-    if(this.vida<=0)    
-        return false;
-
-    return true;
-}
-Scene.prototype.limpar= function(){
-    this.ctx.clearRect(0,0,this.w, this.h);
-}
-
+//DESENHA NPCS=============================================
 Scene.prototype.desenharNPCs=function(){
     //Desenha NPCs
     for(var i=0; i<this.NPCs.length; i++){
@@ -128,16 +107,19 @@ Scene.prototype.desenharNPCs=function(){
             this.NPCs[i].y= Math.random()*this.h;
 
             this.mainSprite[0].imune=2;//cooldown do imune
-            this.vida-=25;
-            barra_HP(this.vida);       //atualiza a barra de vida ao receber dano    
+            this.vida-=20;
+            this.barra_HP();       //atualiza a barra de vida ao receber dano    
         }
     }
 }
+
+//MOVE NPCs=============================================
 Scene.prototype.moveNPCs=function(){
     //Move NPCs e colisão com a borda
     for(var i=0; i<this.NPCs.length; i++){
-        //this.NPCs[i].perseguir(this.mainSprite[0]);   //Perseguir
+        this.NPCs[i].perseguir(this.mainSprite[0]);   //Perseguir
         this.NPCs[i].mover(dt);
+
         if(this.NPCs[i].colisaoBorda(this.w)){
             this.NPCs[i].x= Math.random()*this.w;
             this.NPCs[i].y= Math.random()*this.h; 
@@ -145,31 +127,51 @@ Scene.prototype.moveNPCs=function(){
     }
 }
 
+//PASSO ================================================================
+Scene.prototype.passo =function(dt, tempo, pontos){
+    tempo=tempo/100;
 
+    this.limpar();
+    this.comportamento();
+    this.mover(dt);
+    this.desenhar();
+
+    if(tempo>2){
+        this.moveNPCs();
+        this.desenharNPCs();
+    }
+    this.barra_HP(); 
+
+    if(this.vida<=0){
+        return false;
+    }
+    return true;
+}
+
+//Outras funções =======================================================
+Scene.prototype.limpar= function(){
+    this.ctx.clearRect(0,0,this.w, this.h);
+}
 Scene.prototype.pts=function(){
     return this.pt;
 }
 
-//Outras funções =======================================================
+//DESENHA BARRA DE VIDA e PONTOS
+Scene.prototype.barra_HP= function(){
+    if(this.vida<=0)    this.vida=0; //Caso passe de 0, não ira para negativos
 
-function barra_HP(vida, pontos){
-    if(vida<=0)     vida=0; //Caso passe de 0, não ira para negativos
-
-    if(vida<=30)    this.ctx.fillStyle="red";
-    else            this.ctx.fillStyle="darkblue";
-
-    this.ctx.strokeStyle="white";
-    this.ctx.globalAlpha=0.7;
+    if(this.vida<=30)   this.ctx.fillStyle="red";
+    else                this.ctx.fillStyle="darkblue";
+    //Desenha barra de HP
+    this.ctx.strokeStyle="white";   this.ctx.globalAlpha=0.7;
     this.ctx.fillRect(50, 4,0, 20);
-    this.ctx.fillRect(50, 4,(200*vida)/100,20);
+    this.ctx.fillRect(50, 4,(200*this.vida)/100,20);
     this.ctx.strokeRect(50,4,200,20);
-
-    this.ctx.globalAlpha=1.0;
-    this.ctx.fillStyle="white";
+    //Escreve HP
+    this.ctx.fillStyle="white";     this.ctx.globalAlpha=1.0;
     this.ctx.font="20px bold monospaced";
-    this.ctx.fillText("HP :   "+vida+"%",5,20);
-
-    //DESENHA PONTOS
+    this.ctx.fillText("HP :   "+this.vida+"%",5,20);
+    //Escreve os PONTOS
     this.ctx.font="14px bold monospaced";
-    this.ctx.fillText("PONTOS:"+pontos, 1100, 20);
+    this.ctx.fillText("PONTOS:"+this.pt, 1100, 20);
 }

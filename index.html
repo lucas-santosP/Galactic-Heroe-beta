@@ -13,33 +13,33 @@
     <link rel="stylesheet" href="estilos.css"/>
 </head>
 <body>
-    <div> 
-        <h1>The Legend Of the Galactic Heroes</h1>
-        <canvas/>
+    <div>
+        <canvas id='x'></canvas>
     </div>
 
     <script>
     //Difinições do canvas
         var canvas = document.querySelector("canvas");
         var ctx = canvas.getContext("2d");
-        var canvasLargura=1200,     canvasAltura=600;
+        var canvasLargura=1300,     canvasAltura=700;
         canvas.width=canvasLargura; canvas.height=canvasAltura;
-        canvas.style.border="10px solid darkred";
+        canvas.style.border="10px solid rebeccapurple";
     //Variaveis
         var anterior=0;         var dt=0;
-        var vida=100;           var numeroDeEstrelas=100;
-        var numeroDeNPCs=100;   var teclas={cima:0,  baixo: 0,  direita:0,  esquerda: 0,  espaco: 0, control: 0};
+        var vida=100;           var numeroDeEstrelas=150;
+        var numeroDeNPCs=80;   var teclas={cima:0,  baixo: 0,  direita:0,  esquerda: 0,  espaco: 0, control: 0};
         var alive;              var tempo;
-        var pontos;             var cena1;
+        var pontos=0;             var cena1;
         var pc;
         //IMAGEM
         var assetsMng= new AssetsManager();
         assetsMng.loadImage("player", 'assets/fighterspr1.png');    //main sprite
         assetsMng.loadImage("tiro", 'assets/img-tiro.png')          //tiro
-        
+        assetsMng.loadImage("asteroid", 'assets/asteroids/a1.png');        
     //MAIN
-        requestAnimationFrame(passo);
+        //botaoPlay();
         atualiza();
+        requestAnimationFrame(passo);
         //PASSO
         function passo(t){
             if(alive){
@@ -48,7 +48,6 @@
                 alive = cena1.passo(dt,tempo, pontos);
                 pontos=cena1.pts();
                 anterior=t;
-                //ctx.drawImage(assetsMng.img("player"), cena1.mainSprite[0].x-6, cena1.mainSprite[0].y, 80, 40);
                 requestAnimationFrame(passo);
             }
             else{
@@ -71,7 +70,7 @@
                 cena1.adicionarNPCs(new inimigo1({
                     x:Math.random()*canvas.width, 
                     y:Math.random()*canvas.height,
-                    vy:Math.random()*250+Math.random()*-250,
+                    vy:Math.random()*150+Math.random()*-150,
                     }) );
             }
             //Estrelas
@@ -84,16 +83,35 @@
         }
     //SE MORREU
     function f_morreu(){
-                this.ctx.fillStyle="black";
-                this.ctx.globalAlpha=0.9;
-                this.ctx.fillRect(0, 0, canvas.width,canvas.height);
-                this.ctx.fillStyle="darkred";
-                this.ctx.font="100px bold monospaced";
-                this.ctx.fillText("VOCÊ MORREU",canvas.width/2-360,canvas.height/2+20);   
-                this.ctx.font="38px bold monospaced";
-                this.ctx.fillText("PONTOS:"+pontos, (canvas.width/2-360)+200,(canvas.height/2+20)+80);
-                this.ctx.globalAlpha=1.0;
-            }
+        ctx.globalAlpha=0.2;
+        ctx.fillStyle="black";
+        ctx.fillRect(0, 0, canvas.width,canvas.height);
+        ctx.globalAlpha=1.0;
+
+        ctx.fillStyle="darkred";
+        ctx.font="100px bold monospaced";
+        ctx.fillText("VOCÊ MORREU",canvas.width/2-360,canvas.height/2-30);   
+        ctx.font="38px bold monospaced";
+        ctx.fillText("PONTOS:"+pontos, (canvas.width/2)-100,(canvas.height/2)+250);
+        botaoPlay();
+        }
+
+    function botaoPlay(){ 
+        ctx.font="50px bold roboto";
+        ctx.strokeStyle="red";
+        ctx.lineWidth=2;
+        ctx.fillRect((canvas.width/2)-110, (canvas.height/2)+50, 200, 50);
+        ctx.strokeRect((canvas.width/2)-110, (canvas.height/2)+50, 200, 50); 
+        ctx.fillStyle="white";
+        ctx.fillText("PLAY",(canvas.width/2)-70, (canvas.height/2)+90);  
+        document.getElementById('x').addEventListener("click", atualiza);     
+    }
+
+
+
+
+
+
     //CONTROLES:
         function porTeclas(teclas){
             return function(){

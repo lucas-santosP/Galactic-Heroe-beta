@@ -14,10 +14,10 @@ tiro.prototype = new tiro({});
 tiro.constructor = tiro;
 
 tiro.prototype.desenhar = function(ctx){ 
-    //ctx.fillStyle = this.color;
+    ctx.fillStyle = this.color;
     //ctx.fillRect(this.x, this.y, this.w, this.h);
 
-    ctx.drawImage(this.scene.assets.img("tiro"), this.x, this.y-5, this.w, this.h); 
+    ctx.drawImage(this.scene.assets.img("tiro"), this.x-25, this.y-6, this.w, this.h);
 }
 
 tiro.prototype.mover = function(dt){
@@ -26,8 +26,8 @@ tiro.prototype.mover = function(dt){
 }
 
 tiro.prototype.colidiuComNPC = function(npc, largura){    
-    if( this.x+this.w >= largura+npc.x-10
-        && npc.x+npc.w+largura >= this.x
+    if( this.x-30+this.w >= largura+npc.x-10
+        && npc.x+npc.w+largura >= this.x-25
         && this.y <= npc.y+npc.h
         && this.y+this.h >= npc.y){  
         return true;
@@ -36,7 +36,7 @@ tiro.prototype.colidiuComNPC = function(npc, largura){
 }
 
 tiro.prototype.colisaoBorda = function(largura){
-    if(this.x > largura){
+    if(this.x-25 > largura){
         return true;
     }
     else

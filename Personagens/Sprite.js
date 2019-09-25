@@ -2,7 +2,7 @@ function Sprite(params={}){
     var exemplo={
         x:250,           y:300,
         w:70,           h:40,   
-        vx:0,           vy:0,
+        vx:100,           vy:0,
         vm:0,           imune: 0,
         color: "grey",  
         cooldown: 0,    dash: 0,
@@ -17,26 +17,26 @@ Sprite.prototype.constructor = Sprite;
 Sprite.prototype.desenhar = function(ctx)
 {     
     ctx.save();
-    //ctx.strokeRect(this.x, this.y, this.w, this.h);
     ctx.fillStyle = 'rgba(190, 190, 190, 0.841)';
     ctx.strokeStyle= "red";
     ctx.lineWidth=2;
     //ctx.strokeRect(this.x, this.y, this.w, this.h);
 
-    
     if(this.imune > 0){
         ctx.globalAlpha = 0.5*Math.cos(60*this.imune);
     }
-    if(this.dash > 0){    }
+    if(this.dash > 0){
+
+    }
     ctx.drawImage(this.scene.assets.img("player"), this.x, this.y, this.w, this.h);
-    
-    //ctx.fillRect(this.x, this.y, this.w, this.h)
+    ctx.drawImage(this.scene.assets.img("tiro"), this.x+25, this.y+3, 40, 30);
+
     ctx.restore();
     ctx.globalAlpha = 1.0;
 }
 
 Sprite.prototype.mover = function(dt){
-    this.x= this.x + this.vx * dt;
+    //this.x= this.x + this.vx * dt;
     this.y= this.y + this.vy * dt;
 
     if(this.imune>0){

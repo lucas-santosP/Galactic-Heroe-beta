@@ -12,6 +12,7 @@ body{
     }
 }
 div{
+    display: block;
     animation: fade 2s;
     animation-duration: 2s;
     animation-fill-mode: backwards;
@@ -20,7 +21,7 @@ div{
     text-align: center;  
     align-content: center;
     text-align: center;
-    
+    margin-top: 20px;
 }
 body{
     color:white;

@@ -1,7 +1,7 @@
 function inimigo1(exemplo = {}){
     var{
         x=0,      y=0,
-        w=15,       h=15,
+        w=30,       h=30,
         vx=-200,    vy=0,
         color="purple",
     } = exemplo;
@@ -14,8 +14,12 @@ inimigo1.prototype = new inimigo1({});
 inimigo1.constructor = inimigo1;
 
 inimigo1.prototype.desenhar = function(ctx, largura){ 
-    ctx.fillStyle = this.color;
-    ctx.fillRect(largura+this.x,this.y, this.w, this.h);    
+    ctx.strokeStyle= "red";
+    ctx.lineWidth=2;
+    //ctx.strokeRect(largura+this.x, this.y, this.w, this.h);   
+
+    ctx.drawImage(this.scene.assets.img("asteroid"), largura+this.x, this.y, this.w, this.h);
+    
 }
 inimigo1.prototype.mover = function(dt){
     this.x= this.x + this.vx * dt;
