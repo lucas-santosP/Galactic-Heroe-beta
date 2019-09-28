@@ -37,6 +37,7 @@ Scene.prototype.mover= function(dt){
         this.estrelas[i].mover(dt, this.mainSprite);
         
         this.estrelas[i].colisaoBorda(this.w)
+        //colisão com borda gerando novas estrelas
         //if(this.estrelas[i].colisaoBorda(this.w)){  
             //this.estrelas[i].x= this.w;
             //this.estrelas[i].y= Math.random()*this.h; }
@@ -117,7 +118,7 @@ Scene.prototype.desenharNPCs=function(){
 Scene.prototype.moveNPCs=function(){
     //Move NPCs e colisão com a borda
     for(var i=0; i<this.NPCs.length; i++){
-        this.NPCs[i].perseguir(this.mainSprite);   //Perseguir
+        //this.NPCs[i].perseguir(this.mainSprite);   //Perseguir
         this.NPCs[i].mover(dt);
 
         if(this.NPCs[i].colisaoBorda(this.w)){

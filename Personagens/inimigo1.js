@@ -2,7 +2,7 @@ function inimigo1(exemplo = {}){
     var{
         x=0,      y=0,
         w=30,       h=30,
-        vx=-200,    vy=0,
+        vx=-400,    vy=0,
         color="purple",
     } = exemplo;
     this.w=w;   this.h=h;
@@ -17,7 +17,6 @@ inimigo1.prototype.desenhar = function(ctx, largura){
     ctx.strokeStyle= "red";
     ctx.lineWidth=2;
     //ctx.strokeRect(largura+this.x, this.y, this.w, this.h);   
-
     ctx.drawImage(this.scene.assets.img("asteroid"), largura+this.x, this.y, this.w, this.h);
     
 }
@@ -32,6 +31,6 @@ inimigo1.prototype.colisaoBorda = function(largura){
     return false;
 }
 inimigo1.prototype.perseguir = function(alvo){
-    this.vx = -500*Math.sign(700+alvo.x-this.x);
+    //this.vx = -500*Math.sign(700+alvo.x-this.x);
     //this.vy = 80*Math.sign(alvo.y-this.y);
 }

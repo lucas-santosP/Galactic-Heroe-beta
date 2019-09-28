@@ -21,7 +21,7 @@ estrelas.prototype.mover = function(dt, mainSprite){
     if(mainSprite.vx==0)
         x=0
     else if(mainSprite.vx>=300)
-       x=-350; 
+       x=-400; 
     else if(mainSprite.vx<300)
         x=0;
         
