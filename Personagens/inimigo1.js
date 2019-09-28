@@ -26,8 +26,7 @@ inimigo1.prototype.mover = function(dt){
     this.y= this.y + this.vy * dt;
 }
 inimigo1.prototype.colisaoBorda = function(largura){
-    if(this.x+this.w < -largura){
-        this.x=0;
+    if(this.x+this.w<-largura){
         return true;
     }
     return false;

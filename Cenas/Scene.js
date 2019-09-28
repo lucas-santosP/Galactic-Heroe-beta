@@ -1,7 +1,7 @@
 function Scene(params){
     var exemplo={
         NPCs: [],       NPCs2: [],
-        mainSprite:[], 
+        mainSprite:{}, 
         tiros:[],       estrelas:[], 
         w:1200,         h:600,
         vida:100,       ctx:null,
@@ -14,7 +14,7 @@ Scene.prototype.constructor=Scene;
 
 //METODOS DE ADICIONAR DIFERENTES TIPOS ================================
     Scene.prototype.adicionarMainSprite= function(sprite){  //MainSprite
-        this.mainSprite.push(sprite);
+        this.mainSprite=sprite;
         sprite.scene=this;  }
     Scene.prototype.adicionarNPCs= function(NPC){           //NPCs
         this.NPCs.push(NPC);
@@ -30,11 +30,11 @@ Scene.prototype.constructor=Scene;
 //MOVIMENTO ============================================================
 Scene.prototype.mover= function(dt){
     //Move MainSprite
-    this.mainSprite[0].colisaoBorda(this.w, this.h);
-    this.mainSprite[0].mover(dt);
+    this.mainSprite.colisaoBorda(this.w, this.h);
+    this.mainSprite.mover(dt);
     //Move estrelas e colisão com a borda
     for(var i=0; i<this.estrelas.length; i++){
-        this.estrelas[i].mover(dt, this.mainSprite[0]);
+        this.estrelas[i].mover(dt, this.mainSprite);
         
         this.estrelas[i].colisaoBorda(this.w)
         //if(this.estrelas[i].colisaoBorda(this.w)){  
@@ -52,8 +52,8 @@ Scene.prototype.mover= function(dt){
 //COMPORTAMENTOS ========================================================
 Scene.prototype.comportamento= function(){
     //Comportamento Main Sprite de controle com teclas
-    if(this.mainSprite[0].comportamento)
-        this.mainSprite[0].comportamento();
+    if(this.mainSprite.comportamento)
+        this.mainSprite.comportamento();
     
     /*
     //Comportamento NPCs de perseguir RUIM (desativado)
@@ -92,7 +92,7 @@ Scene.prototype.desenhar= function(){
         }
     }
     //Desenha MainSprite
-    this.mainSprite[0].desenhar(this.ctx);
+    this.mainSprite.desenhar(this.ctx);
 }
 
 //DESENHA NPCS=============================================
@@ -101,12 +101,12 @@ Scene.prototype.desenharNPCs=function(){
     for(var i=0; i<this.NPCs.length; i++){
         this.NPCs[i].desenhar(this.ctx, this.w);
         //Verifica cooldown do imune e se MainSprite colidiu com um NPC
-        if(this.mainSprite[0].imune <=0 && this.mainSprite[0].colidiuComNPC(this.NPCs[i], this.w)){
+        if(this.mainSprite.imune <=0 && this.mainSprite.colidiuComNPC(this.NPCs[i], this.w)){
             //Joga o NPC pra longe ao colidir com MainSprite
             this.NPCs[i].x= Math.random()*this.w;
             this.NPCs[i].y= Math.random()*this.h;
 
-            this.mainSprite[0].imune=2;//cooldown do imune
+            this.mainSprite.imune=2;//cooldown do imune
             this.vida-=20;
             this.barra_HP();       //atualiza a barra de vida ao receber dano    
         }
@@ -117,7 +117,7 @@ Scene.prototype.desenharNPCs=function(){
 Scene.prototype.moveNPCs=function(){
     //Move NPCs e colisão com a borda
     for(var i=0; i<this.NPCs.length; i++){
-        this.NPCs[i].perseguir(this.mainSprite[0]);   //Perseguir
+        this.NPCs[i].perseguir(this.mainSprite);   //Perseguir
         this.NPCs[i].mover(dt);
 
         if(this.NPCs[i].colisaoBorda(this.w)){
@@ -140,20 +140,17 @@ Scene.prototype.passo =function(dt, tempo, pontos){
         this.moveNPCs();
         this.desenharNPCs();
     }
-    this.barra_HP(); 
-
-    if(this.vida<=0){
-        return false;
-    }
-    return true;
+    this.barra_HP();
 }
-
 //Outras funções =======================================================
 Scene.prototype.limpar= function(){
     this.ctx.clearRect(0,0,this.w, this.h);
 }
-Scene.prototype.pts=function(){
+Scene.prototype.getPontos=function(){
     return this.pt;
+}
+Scene.prototype.getVida=function(){
+    return this.vida;
 }
 
 //DESENHA BARRA DE VIDA e PONTOS
@@ -161,7 +158,7 @@ Scene.prototype.barra_HP= function(){
     if(this.vida<=0)    this.vida=0; //Caso passe de 0, não ira para negativos
 
     if(this.vida<=30)   this.ctx.fillStyle="red";
-    else                this.ctx.fillStyle="darkblue";
+    else                this.ctx.fillStyle="blue";
     //Desenha barra de HP
     this.ctx.strokeStyle="white";   this.ctx.globalAlpha=0.7;
     this.ctx.fillRect(50, 4,0, 20);

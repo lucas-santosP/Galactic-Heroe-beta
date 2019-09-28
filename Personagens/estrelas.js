@@ -2,7 +2,7 @@ function estrelas(params={}){
     var exemplo={
         x:0,       y:0,
         w:2,        h:2,
-        vx:0,     vy:0,
+        vx:-0.8,     vy:0,
         color:"white",  
     }
     Object.assign(this, exemplo, params);
@@ -21,7 +21,7 @@ estrelas.prototype.mover = function(dt, mainSprite){
     if(mainSprite.vx==0)
         x=0
     else if(mainSprite.vx>=300)
-       x=-200; 
+       x=-350; 
     else if(mainSprite.vx<300)
         x=0;
         
@@ -29,11 +29,17 @@ estrelas.prototype.mover = function(dt, mainSprite){
     this.y= this.y + this.vy * dt;
 }
 estrelas.prototype.colisaoBorda = function(largura){
-    if(this.x+this.w > 1301){
+    if(this.x+this.w < 0){
+        this.x=largura;
+    }
+
+    /*
+     if(this.x+this.w > 1301){
         this.x=0;
     }
     else if(this.x+this.w < 0){
         this.x=1300;
     }
+    */
 }
 

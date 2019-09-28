@@ -24,8 +24,11 @@ div{
     margin-top: 20px;
 }
 body{
+    /*
     color:white;
     background-image:url(https://i.imgur.com/I1zT9jy.jpg);
-    background-repeat:initial;
-    background-size: auto;
+    background-repeat: initial;
+    background-size: 100%;
+    */
+    background-color: black;
 }

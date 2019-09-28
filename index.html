@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,44 +11,45 @@
     <script src="Personagens/tiro.js"></script>
     <script src="Personagens/inimigo1.js"></script>
     <script src="AssetsManager.js"></script>
-    <link rel="stylesheet" href="estilos.css"/>
+    <link rel="stylesheet" href="estilos.css" />
 </head>
+
 <body>
     <div>
         <canvas id='x'></canvas>
     </div>
 
     <script>
-    //Difinições do canvas
+        //Difinições do canvas
         var canvas = document.querySelector("canvas");
         var ctx = canvas.getContext("2d");
-        var canvasLargura=1300,     canvasAltura=700;
-        canvas.width=canvasLargura; canvas.height=canvasAltura;
-        canvas.style.border="10px solid rebeccapurple";
-    //Variaveis
-        var anterior=0;         var dt=0;
-        var vida=100;           var numeroDeEstrelas=150;
-        var numeroDeNPCs=80;   var teclas={cima:0,  baixo: 0,  direita:0,  esquerda: 0,  espaco: 0, control: 0};
-        var alive;              var tempo;
-        var pontos=0;             var cena1;
+        var canvasLargura = 1300, canvasAltura = 700;
+        canvas.width = canvasLargura; canvas.height = canvasAltura;
+        canvas.style.border = "5px solid white";
+        canvas.style.borderRadius = "10px";
+        //Variaveis
+        var anterior = 0; var dt = 0;
+        var vida = 100; var numeroDeEstrelas = 150;
+        var numeroDeNPCs = 80; var teclas = { cima: 0, baixo: 0, direita: 0, esquerda: 0, espaco: 0, control: 0 };
+        var alive; var tempo;
+        var pontos = 0; var cena1;
         var pc;
         //IMAGEM
-        var assetsMng= new AssetsManager();
+        var assetsMng = new AssetsManager();
         assetsMng.loadImage("player", 'assets/fighterspr1.png');    //main sprite
         assetsMng.loadImage("tiro", 'assets/img-tiro.png')          //tiro
-        assetsMng.loadImage("asteroid", 'assets/asteroids/a1.png');        
-    //MAIN
-        //botaoPlay();
-        atualiza();
-        requestAnimationFrame(passo);
+        assetsMng.loadImage("asteroid", 'assets/asteroids/a1.png');
+
+        //MAIN ==========================================================
+        desenha_menu_inicial();
         //PASSO
-        function passo(t){
-            if(alive){
-                tempo++;
-                dt=(t-anterior)/1000;
-                alive = cena1.passo(dt,tempo, pontos);
-                pontos=cena1.pts();
-                anterior=t;
+        function passo(t) {
+            if (vida > 0) {
+                tempo++; dt = (t - anterior) / 1000;
+                anterior = t;
+                cena1.passo(dt, tempo, pontos);
+                vida = cena1.getVida();
+                pontos = cena1.getPontos();  
                 requestAnimationFrame(passo);
             }
             else{
@@ -55,140 +57,160 @@
                 requestAnimationFrame(passo);
             }
         }
-    //ATUALIZA ESTADO DO JOGO
-        function atualiza(){
-            alive=true;
-            tempo=0;
-            pontos=0;
-            cena1=new Scene({ctx: ctx, w:canvas.width, h: canvas.height, assets: assetsMng});
-        //Geração dos personagens
-            //Sprite Principal
-            pc = new Sprite({comportamento: porTeclas(teclas)});
+        //DESENHA MENU INICIAL
+        function desenha_menu_inicial(){
+            ctx.globalAlpha = 0.1;
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "black";
+            ctx.globalAlpha = 0.4;
+            ctx.fillRect(0, 0, canvas.width, 150);
+            ctx.fillRect(0, 380, canvas.width, 150);
+            ctx.globalAlpha = 1.0;
+
+            ctx.fillStyle = "white";
+            ctx.font = "100px monospaced";
+            ctx.fillText("Legend of the Galact Heroes", canvas.width/2-550, 100);
+            ctx.font = "30px arial";
+            ctx.fillStyle = "white";    
+            ctx.fillText("CLIQUE PARA COMEÇAR", canvas.width/2-170, 500);
+
+            botaoPlay("blue");
+        }
+
+        //ATUALIZA ESTADO DO JOGO
+        function atualiza() {
+            document.getElementById('x').removeEventListener("click", atualiza);
+            vida=100;       tempo = 0;      pontos = 0;
+            cena1 = new Scene({ ctx: ctx, w: canvas.width, h: canvas.height, assets: assetsMng });
+            //Geração dos personagens - main Sprite
+            pc = new Sprite({ comportamento: porTeclas(teclas) });
             cena1.adicionarMainSprite(pc);
             //NPCs
-            for(var i=0; i < numeroDeNPCs; i++){
+            for (var i = 0; i < numeroDeNPCs; i++) {
                 cena1.adicionarNPCs(new inimigo1({
-                    x:Math.random()*canvas.width, 
-                    y:Math.random()*canvas.height,
-                    vy:Math.random()*150+Math.random()*-150,
-                    }) );
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vy: Math.random() * 150 + Math.random() * -150,
+                }));
             }
             //Estrelas
-            for(var i=0; i < numeroDeNPCs; i++){
+            for (var i = 0; i < numeroDeNPCs; i++) {
                 cena1.adicionarEstrelas(new estrelas({
-                    x:Math.random()*canvas.width, 
-                    y:Math.random()*canvas.height
-                    }) );
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height
+                }));
             }
-        }
-    //SE MORREU
-    function f_morreu(){
-        ctx.globalAlpha=0.2;
-        ctx.fillStyle="black";
-        ctx.fillRect(0, 0, canvas.width,canvas.height);
-        ctx.globalAlpha=1.0;
-
-        ctx.fillStyle="darkred";
-        ctx.font="100px bold monospaced";
-        ctx.fillText("VOCÊ MORREU",canvas.width/2-360,canvas.height/2-30);   
-        ctx.font="38px bold monospaced";
-        ctx.fillText("PONTOS:"+pontos, (canvas.width/2)-100,(canvas.height/2)+250);
-        botaoPlay();
+            requestAnimationFrame(passo);
         }
 
-    function botaoPlay(){ 
-        ctx.font="50px bold roboto";
-        ctx.strokeStyle="red";
-        ctx.lineWidth=2;
-        ctx.fillRect((canvas.width/2)-110, (canvas.height/2)+50, 200, 50);
-        ctx.strokeRect((canvas.width/2)-110, (canvas.height/2)+50, 200, 50); 
-        ctx.fillStyle="white";
-        ctx.fillText("PLAY",(canvas.width/2)-70, (canvas.height/2)+90);  
-        document.getElementById('x').addEventListener("click", atualiza);     
-    }
+        //BOTÃO DE PLAY
+        function botaoPlay(cor) {
+            ctx.font = "50px bold roboto";
+            ctx.strokeStyle = "white";
+            ctx.fillStyle = cor;
+            ctx.lineWidth = 2;
+            ctx.fillRect((canvas.width / 2) - 110, (canvas.height / 2) + 50, 200, 50);
+            ctx.strokeRect((canvas.width / 2) - 110, (canvas.height / 2) + 50, 200, 50);
+            ctx.fillStyle = "white";
+            ctx.fillText("PLAY", (canvas.width / 2) - 70, (canvas.height / 2) + 90);
+            document.getElementById('x').addEventListener("click", atualiza);
+        }
+        //SE MORREU
+        function f_morreu() {
+            ctx.globalAlpha = 0.2;
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-
-
-
-
-
-    //CONTROLES:
-        function porTeclas(teclas){
-            return function(){
-                if(teclas.esquerda)  {this.vx= -300;}
-                if(teclas.direita)   {this.vx= +300;}
-                if(!teclas.esquerda === !teclas.direita){
-                    this.vx=0; }
-                if(teclas.cima)     {this.vy= -300;}
-                if(teclas.baixo)    {this.vy= +300;}
-                if(!teclas.cima === !teclas.baixo){  
-                    this.vy=0; }
-                if(teclas.espaco && this.cooldown<=0){
-                    var u_tiro = new tiro({ x:this.x+pc.w-8, y: this.y+(pc.h/2)-2.5,});
+            ctx.globalAlpha = 1.0;
+            ctx.fillStyle = "darkred";
+            ctx.font = "100px bold monospaced";
+            ctx.fillText("VOCÊ MORREU", canvas.width / 2 - 360, canvas.height / 2 - 30);
+            ctx.font = "38px bold monospaced";
+            ctx.fillText("PONTOS:" + pontos, (canvas.width / 2) - 100, (canvas.height / 2) + 250);
+            botaoPlay("darkred");
+        }
+        
+        //CONTROLES:
+        function porTeclas(teclas) {
+            return function () {
+                if (teclas.esquerda) { this.vx = -300; }
+                if (teclas.direita) { this.vx = +300; }
+                if (!teclas.esquerda === !teclas.direita) {
+                    this.vx = 0;
+                }
+                if (teclas.cima) { this.vy = -300; }
+                if (teclas.baixo) { this.vy = +300; }
+                if (!teclas.cima === !teclas.baixo) {
+                    this.vy = 0;
+                }
+                if (teclas.espaco && this.cooldown <= 0) {
+                    var u_tiro = new tiro({ x: this.x + pc.w - 8, y: this.y + (pc.h / 2) - 2.5, });
                     this.scene.adicionarTiros(u_tiro);
-                    this.cooldown=0.3;  
-                    u_tiro=null;
+                    this.cooldown = 0.3;
+                    u_tiro = null;
                 }
-                if(teclas.control){
+                if (teclas.control) {
                     console.log("control");
-                    this.dash=1;
+                    this.dash = 1;
                 }
             }
         }
-      addEventListener("keydown", function(e){
-            switch(e.keyCode) {
+        addEventListener("keydown", function (e) {
+            switch (e.keyCode) {
                 case 17:
-                    teclas.control=1;
+                    teclas.control = 1;
                     break;
                 case 32:
-                    teclas.espaco=1;
+                    teclas.espaco = 1;
                     break;
                 case 37:
-                    teclas.esquerda=1;
+                    teclas.esquerda = 1;
                     break;
                 case 38:
-                    teclas.cima=1;
+                    teclas.cima = 1;
                     break;
                 case 39:
-                    teclas.direita=1;
+                    teclas.direita = 1;
                     break;
                 case 40:
-                    teclas.baixo=1;
+                    teclas.baixo = 1;
                     break;
                 case 32:
-                    teclas.espaco=1;
+                    teclas.espaco = 1;
                     break;
                 default:
                     break;
             };
         });
-        addEventListener("keyup", function(e){
-        switch(e.keyCode){
-            case 17:
-                teclas.control=0;
-                break;
-            case 32:
-                teclas.espaco=0;
-                break;
-            case 37:
-                teclas.esquerda=0;
-                break;
-            case 38:
-                teclas.cima=0;
-                break;
-            case 39:
-                teclas.direita=0;
-                break;
-            case 40:
-                teclas.baixo=0;
-                break;
-            case 32:
-                teclas.espaco=0;
-                break;
-            default:
-                break;
-        }
-      });
+        addEventListener("keyup", function (e) {
+            switch (e.keyCode) {
+                case 17:
+                    teclas.control = 0;
+                    break;
+                case 32:
+                    teclas.espaco = 0;
+                    break;
+                case 37:
+                    teclas.esquerda = 0;
+                    break;
+                case 38:
+                    teclas.cima = 0;
+                    break;
+                case 39:
+                    teclas.direita = 0;
+                    break;
+                case 40:
+                    teclas.baixo = 0;
+                    break;
+                case 32:
+                    teclas.espaco = 0;
+                    break;
+                default:
+                    break;
+            }
+        });
     </script>
 </body>
+
 </html>
