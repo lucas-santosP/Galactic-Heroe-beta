@@ -1,6 +1,6 @@
 function Sprite(params={}){
     var exemplo={
-        x:250,           y:300,
+        x:100,           y:300,
         w:70,           h:40,   
         vx:100,           vy:0,
         vm:0,           imune: 0,

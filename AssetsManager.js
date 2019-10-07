@@ -61,8 +61,40 @@ AssetsManager.prototype.play = function (key) {
             this.channels[i].audio.src = this.audios[key].src;
             this.channels[i].fim = agora.getTime()+this.audios[key].duration*1000;
             this.channels[i].audio.play();
+            this.channels[i].audio.volume=0.05;
             break;
         }
 
     }
+}
+
+
+AssetsManager.prototype.OSTplay = function (key) {
+    if(!this.audios[key]){
+        throw new Error(`Chave de audio inválida: ${key}!`);
+    }
+    else{
+        this.audios[key].play();
+        this.audios[key].volume=0.25;
+        this.audios[key].sloop=true;
+    }
+}
+AssetsManager.prototype.OSTpause=function(key){
+    if(!this.audios[key]){
+        throw new Error(`Chave de audio inválida: ${key}!`);
+    }
+    else{
+        this.audios[key].pause();
+        this.audios[key].load();
+        /*
+        for(var i =0; i< this.MAX_CHANNELS; i++){
+            if(this.channels[i].audio.src == this.audios[key].src){
+                console.log("pausou");
+                this.channels[i].audio.pause();
+                break;
+            }
+        }
+        */
+    }
+    
 }

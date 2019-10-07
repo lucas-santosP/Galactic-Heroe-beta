@@ -42,14 +42,17 @@
         assetsMng.loadImage("asteroid", 'assets/asteroids/a1.png');
         assetsMng.loadImage("explosion", "assets/explosion.png");
         //SONS
-        assetsMng.loadAudio("explosion", "assets/explosion.mp3");
-        assetsMng.loadAudio("shot", "assets/shot.mp3");
-
+        assetsMng.loadAudio("OST", "assets/soundtrack.mp3");
+        assetsMng.loadAudio("explosion", "assets/explosion.wav");
+        assetsMng.loadAudio("shot", "assets/shot.wav");
+        assetsMng.loadAudio("menuSoundTrack", "assets/menuSoundTrack.mp3");
+        assetsMng.loadAudio("deathSound", "assets/death-sound-effect.mp3");
         //MAIN ==========================================================
         desenha_menu_inicial();
         //PASSO
         function passo(t) {
             if (vida > 0) {
+                
                 tempo++; dt = (t - anterior) / 1000;
                 anterior = t;
                 cena1.passo(dt, tempo);
@@ -65,6 +68,7 @@
 
         //DESENHA MENU INICIAL
         function desenha_menu_inicial(){
+            assetsMng.OSTplay("menuSoundTrack");
             ctx.globalAlpha = 0.1;
             ctx.fillStyle = "white";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -107,9 +111,11 @@
                     y: Math.random() * canvas.height
                 }));
             }
+            assetsMng.OSTpause("menuSoundTrack");
+            assetsMng.OSTplay("OST");
             requestAnimationFrame(passo);
         }
-
+        
         //BOTÃO DE PLAY e Evento de click para reiniciar
         function botaoPlay(cor) {
             ctx.font = "50px bold roboto";
@@ -124,6 +130,7 @@
         }
         //SE MORREU
         function f_morreu() {
+            assetsMng.OSTpause("OST");
             ctx.globalAlpha = 0.2;
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -154,6 +161,7 @@
                     var u_tiro = new tiro({ x: this.x + pc.w - 8, y: this.y + (pc.h / 2) - 2.5, });
                     this.scene.adicionarTiros(u_tiro);
                     this.cooldown = 0.3;
+                    assetsMng.play("shot");
                     u_tiro = null;
                 }
                 if (teclas.control) {

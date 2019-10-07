@@ -105,7 +105,7 @@ Scene.prototype.desenharNPCs = function () {
             this.NPCs[i].y = Math.random() * this.h;
             //cooldown do imune
             this.mainSprite.imune = 2;
-            this.vida -= 20;          //Dano pela colisão
+            this.vida -= 100;          //Dano pela colisão
             this.barra_HP();        //atualiza a barra de vida ao receber dano    
         }
     }
@@ -180,6 +180,9 @@ Scene.prototype.getPontos = function () {
     return this.pt;
 }
 Scene.prototype.getVida = function () {
+    if(this.vida<=0){
+        this.assets.OSTplay("deathSound");
+    }
     return this.vida;
 }
 //DESENHA BARRA DE VIDA e PONTOS
