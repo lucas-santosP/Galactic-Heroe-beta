@@ -5,40 +5,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HOME PAGE</title>
-    <script src="Cenas/Scene.js"></script>
+    <script src="Scene.js"></script>
     <script src="Personagens/estrelas.js"></script>
     <script src="Personagens/Sprite.js"></script>
     <script src="Personagens/tiro.js"></script>
     <script src="Personagens/inimigo1.js"></script>
+    <script src="Personagens/Explosion.js"></script>
     <script src="AssetsManager.js"></script>
     <link rel="stylesheet" href="estilos.css" />
 </head>
 
 <body>
     <div>
-        <canvas id='x'></canvas>
+        <canvas id="x"></canvas>
     </div>
 
     <script>
         //Difinições do canvas
         var canvas = document.querySelector("canvas");
         var ctx = canvas.getContext("2d");
-        var canvasLargura = 1300, canvasAltura = 700;
-        canvas.width = canvasLargura; canvas.height = canvasAltura;
+        canvas.width = 1300; canvas.height = 700;
         canvas.style.border = "5px solid white";
         canvas.style.borderRadius = "10px";
         //Variaveis
-        var anterior = 0; var dt = 0;
-        var vida = 100; var numeroDeEstrelas = 150;
-        var numeroDeNPCs = 80; var teclas = { cima: 0, baixo: 0, direita: 0, esquerda: 0, espaco: 0, control: 0 };
-        var alive; var tempo;
-        var pontos = 0; var cena1;
-        var pc;
-        //IMAGEM
+        var teclas={cima: 0, baixo: 0, direita: 0, esquerda: 0, espaco: 0, control: 0};
+        var anterior=0;     var dt=0;
+        var vida=100;       var alive;
+        var tempo;          var pontos=0; 
+        var cena1;          var pc;
+        var numeroDeNPCs=80; 
+        var numeroDeEstrelas=150;
+        //IMAGENS
         var assetsMng = new AssetsManager();
         assetsMng.loadImage("player", 'assets/fighterspr1.png');    //main sprite
         assetsMng.loadImage("tiro", 'assets/img-tiro.png')          //tiro
         assetsMng.loadImage("asteroid", 'assets/asteroids/a1.png');
+        assetsMng.loadImage("explosion", "assets/explosion.png");
+        //SONS
+        assetsMng.loadAudio("explosion", "assets/explosion.mp3");
+        assetsMng.loadAudio("shot", "assets/shot.mp3");
 
         //MAIN ==========================================================
         desenha_menu_inicial();
@@ -47,9 +52,9 @@
             if (vida > 0) {
                 tempo++; dt = (t - anterior) / 1000;
                 anterior = t;
-                cena1.passo(dt, tempo, pontos);
-                vida = cena1.getVida();
-                pontos = cena1.getPontos();  
+                cena1.passo(dt, tempo);
+                vida = cena1.getVida();         //Get vida para atualizar a barra de HP desenhada aqui fora da cena
+                pontos = cena1.getPontos();     //Get pontos para atualizar os pontos fora da cena
                 requestAnimationFrame(passo);
             }
             else{
@@ -57,6 +62,7 @@
                 requestAnimationFrame(passo);
             }
         }
+
         //DESENHA MENU INICIAL
         function desenha_menu_inicial(){
             ctx.globalAlpha = 0.1;
@@ -104,7 +110,7 @@
             requestAnimationFrame(passo);
         }
 
-        //BOTÃO DE PLAY
+        //BOTÃO DE PLAY e Evento de click para reiniciar
         function botaoPlay(cor) {
             ctx.font = "50px bold roboto";
             ctx.strokeStyle = "white";

@@ -16,9 +16,8 @@ inimigo1.constructor = inimigo1;
 inimigo1.prototype.desenhar = function(ctx, largura){ 
     ctx.strokeStyle= "red";
     ctx.lineWidth=2;
-    //ctx.strokeRect(largura+this.x, this.y, this.w, this.h);   
+    //ctx.strokeRect(largura+this.x, this.y, this.w, this.h);  //contorno  
     ctx.drawImage(this.scene.assets.img("asteroid"), largura+this.x, this.y, this.w, this.h);
-    
 }
 inimigo1.prototype.mover = function(dt){
     this.x= this.x + this.vx * dt;
