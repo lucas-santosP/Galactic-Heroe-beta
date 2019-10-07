@@ -26,10 +26,10 @@ Explosion.prototype.desenhar = function(ctx, largura){
     var F = Math.floor(this.frame);
     ctx.drawImage(
         this.scene.assets.img("explosion"),
-        (F%12)*95,   //colunas
-        Math.floor(F/12)*95,
-        95,
-        95,
+        (F%12)*96,   //colunas
+        Math.floor(F/12)*96,
+        96,
+        96,
         -this.w/2,
         -this.h/2,
         this.w,
