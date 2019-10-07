@@ -13,7 +13,7 @@ function Explosion(params ={}) {
 }
 
 Explosion.prototype.mover = function(dt){
-    this.frame += 26*dt;
+    this.frame += 24*dt;
     if(Math.floor(this.frame) > 16){
         //this.frame = 0;
         this.morto = true;
@@ -26,10 +26,10 @@ Explosion.prototype.desenhar = function(ctx, largura){
     var F = Math.floor(this.frame);
     ctx.drawImage(
         this.scene.assets.img("explosion"),
-        (F%4)*64,
-        Math.floor(F/4)*64,
-        64,
-        64,
+        (F%12)*95,   //colunas
+        Math.floor(F/12)*95,
+        95,
+        95,
         -this.w/2,
         -this.h/2,
         this.w,

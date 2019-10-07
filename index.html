@@ -68,7 +68,7 @@
 
         //DESENHA MENU INICIAL
         function desenha_menu_inicial(){
-            assetsMng.OSTplay("menuSoundTrack");
+            assetsMng.playSound("menuSoundTrack");
             ctx.globalAlpha = 0.1;
             ctx.fillStyle = "white";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -111,8 +111,8 @@
                     y: Math.random() * canvas.height
                 }));
             }
-            assetsMng.OSTpause("menuSoundTrack");
-            assetsMng.OSTplay("OST");
+            assetsMng.pauseSound("menuSoundTrack");
+            assetsMng.playSound("OST");
             requestAnimationFrame(passo);
         }
         
@@ -130,7 +130,7 @@
         }
         //SE MORREU
         function f_morreu() {
-            assetsMng.OSTpause("OST");
+            assetsMng.pauseSound("OST");
             ctx.globalAlpha = 0.2;
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, canvas.width, canvas.height);

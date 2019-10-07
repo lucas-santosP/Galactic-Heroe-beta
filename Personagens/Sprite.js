@@ -26,11 +26,13 @@ Sprite.prototype.desenhar = function(ctx)
         ctx.globalAlpha = 0.5*Math.cos(60*this.imune);
     }
     if(this.dash > 0){
-
+        ctx.drawImage(this.scene.assets.img("player"), this.x, this.y, this.w-10, this.h-10);
+        ctx.drawImage(this.scene.assets.img("tiro"), this.x+25, this.y+3, 40-10, 30-10);
     }
-    ctx.drawImage(this.scene.assets.img("player"), this.x, this.y, this.w, this.h);
-    ctx.drawImage(this.scene.assets.img("tiro"), this.x+25, this.y+3, 40, 30);
-
+    else{
+        ctx.drawImage(this.scene.assets.img("player"), this.x, this.y, this.w, this.h);
+        ctx.drawImage(this.scene.assets.img("tiro"), this.x+25, this.y+3, 40, 30);
+    }
     ctx.restore();
     ctx.globalAlpha = 1.0;
 }
@@ -51,12 +53,21 @@ Sprite.prototype.mover = function(dt){
 }
 
 Sprite.prototype.colidiuComNPC = function(alvo, largura){
-    if(largura+alvo.x+alvo.w < this.x)  return false;
-    if(largura+alvo.x > this.x+this.w)  return false;
-    if(alvo.y+alvo.h < this.y)          return false;
-    if(alvo.y > this.y+this.h)          return false;
+    if(this.dash > 0){  //Colisão com dash
+        if(largura+alvo.x+alvo.w < this.x)  return false;
+        if(largura+alvo.x > this.x+this.w-10)  return false;
+        if(alvo.y+alvo.h < this.y)          return false;
+        if(alvo.y > this.y+this.h-10)          return false;
+        return true;
+    }
+    else{               //Colisão sem dash
+        if(largura+alvo.x+alvo.w < this.x)  return false;
+        if(largura+alvo.x > this.x+this.w)  return false;
+        if(alvo.y+alvo.h < this.y)          return false;
+        if(alvo.y > this.y+this.h)          return false;
 
-    return true;
+        return true;
+    }
 }
 
 Sprite.prototype.perseguir = function(opçcoes){

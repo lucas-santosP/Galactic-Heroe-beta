@@ -41,8 +41,10 @@ AssetsManager.prototype.loadAudio = function (key, url) {
     //this.aCarregar++;
     var audio = new Audio();
     audio.src = url;
+    if(key == "shot") audio.volume=0.0;
     audio.load();
     this.audios[key] = audio;
+    
     var that = this;
     /*audio.addEventListener("canplay", function () {
         //that.carregadas++;
@@ -61,7 +63,7 @@ AssetsManager.prototype.play = function (key) {
             this.channels[i].audio.src = this.audios[key].src;
             this.channels[i].fim = agora.getTime()+this.audios[key].duration*1000;
             this.channels[i].audio.play();
-            this.channels[i].audio.volume=0.05;
+            this.channels[i].audio.volume=0.02;
             break;
         }
 
@@ -69,7 +71,7 @@ AssetsManager.prototype.play = function (key) {
 }
 
 
-AssetsManager.prototype.OSTplay = function (key) {
+AssetsManager.prototype.playSound = function (key) {
     if(!this.audios[key]){
         throw new Error(`Chave de audio inválida: ${key}!`);
     }
@@ -79,7 +81,7 @@ AssetsManager.prototype.OSTplay = function (key) {
         this.audios[key].sloop=true;
     }
 }
-AssetsManager.prototype.OSTpause=function(key){
+AssetsManager.prototype.pauseSound=function(key){
     if(!this.audios[key]){
         throw new Error(`Chave de audio inválida: ${key}!`);
     }
