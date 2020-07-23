@@ -1,11 +1,3 @@
-Links usados para referencias:
-
-https://opengameart.org
-
-https://mp3cut.net/pt/
-
-https://opengameart.org/content/sci-fi-space-simple-bullets
-
-https://opengameart.org/content/space-background-2
-
-https://github.com/ufjf-dcc104/dcc138-2019-1-semana05
+# Galactic Heroes
+Game feito durantes as aulas de Tópicos de linguagem programação - DCC138.
+Demonstração pode ser acessada neste [link](https://lucas-santosp.github.io/galactic-heroes/)
