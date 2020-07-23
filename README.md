@@ -1,4 +1,4 @@
-Links uteis:
+Links usados para referencias:
 
 https://opengameart.org
 
